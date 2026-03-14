@@ -1,0 +1,586 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sage: #4a6741;
+    --sage-light: #e8f0e6;
+    --forest: #2d4a2a;
+    --linen: #f5f0e8;
+    --ink: var(--color-text-primary);
+    --muted: var(--color-text-secondary);
+    --border: var(--color-border-tertiary);
+  }
+
+  body { font-family: 'DM Sans', var(--font-sans), sans-serif; }
+
+  .wrap { padding: 0.5rem 0 2rem; }
+
+  .section-title {
+    font-family: 'DM Serif Display', var(--font-serif), serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--ink);
+    margin: 2rem 0 0.75rem;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title span {
+    font-family: 'DM Sans', var(--font-sans), sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  /* PILLARS */
+  .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+  .pillar-card {
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-lg);
+    padding: 14px;
+    background: var(--color-background-primary);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .pillar-card:hover { border-color: var(--color-border-primary); }
+  .pillar-icon { font-size: 18px; margin-bottom: 8px; }
+  .pillar-name { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 4px; }
+  .pillar-owner { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .pillar-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .pillar-tag {
+    display: inline-block; margin-top: 8px;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 4px;
+  }
+
+  .tag-research { background: #e8f0e6; color: #2d4a2a; }
+  .tag-strategy { background: #e6eef8; color: #1a3a5c; }
+  .tag-ops { background: #f3ede0; color: #5a3e1b; }
+  .tag-bd { background: #f0e6f0; color: #4a2a5a; }
+
+  @media (prefers-color-scheme: dark) {
+    .tag-research { background: #1e3020; color: #8bc07e; }
+    .tag-strategy { background: #1a2840; color: #7aaad4; }
+    .tag-ops { background: #2e2010; color: #d4a870; }
+    .tag-bd { background: #281828; color: #c07ec0; }
+  }
+
+  /* FORMAT GUIDE */
+  .formats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .format-card {
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-lg);
+    padding: 14px 16px;
+    background: var(--color-background-primary);
+  }
+  .format-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .format-name { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .format-freq {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 4px;
+    background: var(--color-background-secondary);
+    color: var(--muted);
+  }
+  .format-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+  .format-examples { margin-top: 8px; }
+  .format-ex { font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .format-ex::before { content: "→ "; color: var(--sage); }
+
+  /* CALENDAR */
+  .cal-row {
+    display: grid;
+    grid-template-columns: 90px repeat(7, 1fr);
+    gap: 6px;
+    align-items: start;
+    margin-bottom: 6px;
+  }
+  .cal-day-header {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted);
+    text-align: center; padding: 4px 0;
+  }
+  .cal-week-label {
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    padding-top: 8px;
+  }
+  .cal-cell {
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-md);
+    padding: 7px 8px;
+    min-height: 52px;
+    background: var(--color-background-primary);
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+  .cal-cell.has-post {
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .cal-cell.has-post:hover { border-color: var(--color-border-primary); }
+  .cal-cell.long-form {
+    border-color: #4a6741;
+    background: #f2f6f1;
+  }
+  .cal-cell.daily { }
+  .cal-cell-type {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--sage); margin-bottom: 3px;
+  }
+  .cal-cell.long-form .cal-cell-type { color: var(--forest); font-weight: 700; }
+  .cal-cell-title { font-size: 11px; color: var(--ink); font-weight: 400; }
+  .cal-cell-owner {
+    margin-top: 4px; font-size: 10px; color: var(--muted);
+    font-weight: 500;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .cal-cell.long-form {
+      border-color: #4a6741;
+      background: #1a2218;
+    }
+  }
+
+  /* CONTENT IDEAS BANK */
+  .ideas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ideas-section-label {
+    grid-column: 1 / -1;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+    margin-top: 8px; margin-bottom: 2px;
+  }
+  .idea-pill {
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-md);
+    padding: 9px 12px;
+    background: var(--color-background-primary);
+    font-size: 12px; color: var(--ink); line-height: 1.45;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .idea-pill:hover { border-color: var(--color-border-primary); }
+  .idea-pill .idea-owner { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  /* GROWTH PHASE TIMELINE */
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
+  .phase-card {
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-lg);
+    padding: 14px;
+    background: var(--color-background-primary);
+  }
+  .phase-num {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .phase-name { font-size: 14px; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+  .phase-trigger {
+    font-size: 11px; color: var(--muted); margin-bottom: 8px; font-style: italic;
+  }
+  .phase-action { font-size: 12px; color: var(--ink); line-height: 1.55; }
+  .phase-action li { list-style: none; padding: 2px 0; }
+  .phase-action li::before { content: "– "; color: var(--muted); }
+
+  /* ORG SYSTEM */
+  .org-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .org-card {
+    border: 0.5px solid var(--border);
+    border-radius: var(--border-radius-lg);
+    padding: 14px;
+    background: var(--color-background-primary);
+  }
+  .org-title { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 8px; }
+  .org-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-top: 0.5px solid var(--border); padding: 6px 0;
+    font-size: 12px;
+  }
+  .org-row:first-of-type { border-top: none; padding-top: 0; }
+  .org-label { color: var(--muted); }
+  .org-val { color: var(--ink); font-weight: 500; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .tab {
+    padding: 6px 14px; border-radius: 20px;
+    border: 0.5px solid var(--border);
+    background: var(--color-background-primary);
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .tab.active {
+    background: var(--sage);
+    border-color: var(--sage);
+    color: #fff;
+  }
+  .tab:hover:not(.active) { border-color: var(--color-border-primary); color: var(--ink); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+</style>
+
+<div class="wrap">
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('pillars')">Content pillars</div>
+    <div class="tab" onclick="switchTab('calendar')">Week 1 calendar</div>
+    <div class="tab" onclick="switchTab('bank')">Ideas bank</div>
+    <div class="tab" onclick="switchTab('phases')">Growth phases</div>
+    <div class="tab" onclick="switchTab('org')">Org system</div>
+  </div>
+
+  <!-- PILLARS -->
+  <div class="panel active" id="tab-pillars">
+    <p class="section-title">Four content pillars <span>The framework</span></p>
+    <div class="pillars">
+      <div class="pillar-card" onclick="sendPrompt('Generate 10 post ideas for the Research pillar at Tribe Advisors')">
+        <div class="pillar-icon">🔬</div>
+        <div class="pillar-name">Research & Intelligence</div>
+        <div class="pillar-owner">Jynro · Lucci</div>
+        <div class="pillar-desc">Public research notes. Sector breakdowns, fundraising frameworks, tokenomics patterns. The Crafts-style deep dive adapted for founders.</div>
+        <span class="pillar-tag tag-research">Research</span>
+      </div>
+      <div class="pillar-card" onclick="sendPrompt('Generate 10 post ideas for the Brand & Narrative pillar at Tribe Advisors')">
+        <div class="pillar-icon">🎯</div>
+        <div class="pillar-name">Brand & Narrative</div>
+        <div class="pillar-owner">Adams</div>
+        <div class="pillar-desc">How Web3 projects tell their story. Positioning, content strategy, community narrative, launch playbooks. Show the work, not just the theory.</div>
+        <span class="pillar-tag tag-strategy">Strategy</span>
+      </div>
+      <div class="pillar-card" onclick="sendPrompt('Generate 10 post ideas for the Ops & Dealflow pillar at Tribe Advisors')">
+        <div class="pillar-icon">⚙️</div>
+        <div class="pillar-name">Ops & Dealflow</div>
+        <div class="pillar-owner">Sruickk · Lucci</div>
+        <div class="pillar-desc">The founder operating layer. BD strategy, data-driven dealflow, pipeline management, building companies from the inside. Practitioner voice.</div>
+        <span class="pillar-tag tag-ops">Ops</span>
+      </div>
+      <div class="pillar-card" onclick="sendPrompt('Generate 10 post ideas for the Fundraising pillar at Tribe Advisors')">
+        <div class="pillar-icon">💰</div>
+        <div class="pillar-name">Fundraising & Capital</div>
+        <div class="pillar-owner">Jynro · All</div>
+        <div class="pillar-desc">Round structures, valuation logic, investor dynamics, term sheet patterns. Practical insights founders can act on — not generic advice.</div>
+        <span class="pillar-tag tag-bd">Capital</span>
+      </div>
+    </div>
+
+    <p class="section-title">Content formats <span>Daily + long-form</span></p>
+    <div class="formats">
+      <div class="format-card">
+        <div class="format-head">
+          <span class="format-name">Daily post</span>
+          <span class="format-freq">1× per day</span>
+        </div>
+        <div class="format-desc">Short, punchy, one idea. Opinion, observation, or a single framework point. Think: what would you say to a founder in 2 sentences at a conference?</div>
+        <div class="format-examples">
+          <div class="format-ex">A short take on a misunderstood metric</div>
+          <div class="format-ex">One thing most Web3 pitch decks get wrong</div>
+          <div class="format-ex">A data point with a counterintuitive angle</div>
+          <div class="format-ex">Reply bait — a bold claim founders debate</div>
+        </div>
+      </div>
+      <div class="format-card">
+        <div class="format-head">
+          <span class="format-name">Long-form thread</span>
+          <span class="format-freq">1× per week</span>
+        </div>
+        <div class="format-desc">10–18 tweet thread or a published article. One topic, deeply. Builds authority. Structured like: hook → context → framework → examples → takeaway.</div>
+        <div class="format-examples">
+          <div class="format-ex">Sector teardown with real data points</div>
+          <div class="format-ex">Fundraising framework with worked example</div>
+          <div class="format-ex">Brand/narrative case study (anon if needed)</div>
+          <div class="format-ex">Ops playbook: how we approach X at Tribe</div>
+        </div>
+      </div>
+      <div class="format-card">
+        <div class="format-head">
+          <span class="format-name">Research note</span>
+          <span class="format-freq">Bi-weekly</span>
+        </div>
+        <div class="format-desc">Jynro's zone. 600–1200 words, published as article or long thread. Think Crafts memo but public-facing — fundraising insight, tokenomics pattern, sector flag.</div>
+        <div class="format-examples">
+          <div class="format-ex">"Why most seed rounds are mispriced in DePIN"</div>
+          <div class="format-ex">Vesting cliff patterns across 40 rounds</div>
+          <div class="format-ex">When advisors hurt vs help a raise</div>
+        </div>
+      </div>
+      <div class="format-card">
+        <div class="format-head">
+          <span class="format-name">Spaces / AMA</span>
+          <span class="format-freq">Phase 2</span>
+        </div>
+        <div class="format-desc">Once baseline audience is established. Founder interviews, live Q&As around the long-form pieces. Drives follows and shows the team's actual range.</div>
+        <div class="format-examples">
+          <div class="format-ex">Live breakdown of a real fundraise</div>
+          <div class="format-ex">Founder AMA: "how we repositioned our brand"</div>
+          <div class="format-ex">Dealflow data: what we're seeing in market</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="panel" id="tab-calendar">
+    <p class="section-title">Week 1 — Sample publishing calendar</p>
+    <div class="cal-row">
+      <div></div>
+      <div class="cal-day-header">Mon</div>
+      <div class="cal-day-header">Tue</div>
+      <div class="cal-day-header">Wed</div>
+      <div class="cal-day-header">Thu</div>
+      <div class="cal-day-header">Fri</div>
+      <div class="cal-day-header">Sat</div>
+      <div class="cal-day-header">Sun</div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-week-label">Week 1</div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">What most founders miss when structuring an advisory board</div>
+        <div class="cal-cell-owner">Jynro</div>
+      </div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">The narrative mistake that kills raises before they start</div>
+        <div class="cal-cell-owner">Adams</div>
+      </div>
+
+      <div class="cal-cell has-post long-form">
+        <div class="cal-cell-type">🗞 Long-form</div>
+        <div class="cal-cell-title">Seed round valuation in DePIN: what the data actually shows</div>
+        <div class="cal-cell-owner">Jynro + Lucci</div>
+      </div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">3 BD levers that compound over time vs short-term plays</div>
+        <div class="cal-cell-owner">Sruickk</div>
+      </div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">Why Web3 projects position to VCs, not users — and why that's backwards</div>
+        <div class="cal-cell-owner">Adams</div>
+      </div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">The quiet metric we track on every client account</div>
+        <div class="cal-cell-owner">Lucci</div>
+      </div>
+
+      <div class="cal-cell" style="opacity:0.35">
+        <div class="cal-cell-title">Rest / schedule buffer</div>
+      </div>
+    </div>
+
+    <div class="cal-row" style="margin-top: 10px;">
+      <div class="cal-week-label">Week 2</div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">One question we ask every founder before taking them on</div>
+        <div class="cal-cell-owner">Lucci</div>
+      </div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">Token vesting: the structure that signals trust vs the one that kills it</div>
+        <div class="cal-cell-owner">Jynro</div>
+      </div>
+
+      <div class="cal-cell has-post long-form">
+        <div class="cal-cell-type">🗞 Long-form</div>
+        <div class="cal-cell-title">How to build a BD pipeline in Web3 when you're not well connected (yet)</div>
+        <div class="cal-cell-owner">Sruickk + Lucci</div>
+      </div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">What your pitch deck communicates before anyone reads it</div>
+        <div class="cal-cell-owner">Adams</div>
+      </div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">The difference between an audience and a community in Web3</div>
+        <div class="cal-cell-owner">Adams</div>
+      </div>
+
+      <div class="cal-cell has-post daily">
+        <div class="cal-cell-type">Daily</div>
+        <div class="cal-cell-title">Dealflow data: sectors getting the most traction this month</div>
+        <div class="cal-cell-owner">Sruickk</div>
+      </div>
+
+      <div class="cal-cell" style="opacity:0.35">
+        <div class="cal-cell-title">Rest / schedule buffer</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IDEAS BANK -->
+  <div class="panel" id="tab-bank">
+    <p class="section-title">Ideas bank <span>60+ starters, click any to expand</span></p>
+    <div class="ideas-grid">
+      <div class="ideas-section-label">🔬 Research & Intelligence (Jynro)</div>
+
+      <div class="idea-pill" onclick="sendPrompt('Write a full long-form Twitter thread for Tribe Advisors on: Why most DePIN seed rounds are mispriced — with data-backed reasoning and a framework founders can use')">
+        Why most DePIN seed rounds are mispriced
+        <div class="idea-owner">Long-form · Jynro</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a Twitter thread for Tribe Advisors: 5 things we learned analyzing 40 Web3 fundraising rounds')">
+        What 40 Web3 rounds taught us about vesting structures
+        <div class="idea-owner">Thread · Jynro</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a short punchy daily post for Tribe Advisors: The fundraising signal most founders miss — advisor allocation as a credibility signal')">
+        Advisor allocation as a credibility signal
+        <div class="idea-owner">Daily · Jynro</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a Tribe Advisors thread: RWA tokenization — what the institutional money is actually waiting for')">
+        RWA tokenization: what institutional money is waiting for
+        <div class="idea-owner">Thread · Jynro</div>
+      </div>
+
+      <div class="ideas-section-label">🎯 Brand & Narrative (Adams)</div>
+
+      <div class="idea-pill" onclick="sendPrompt('Write a long-form Twitter thread for Tribe Advisors by Adams: Why Web3 projects position to investors instead of users — and how to flip that')">
+        Why Web3 projects pitch VCs, not users — and why that's wrong
+        <div class="idea-owner">Thread · Adams</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a daily post for Tribe Advisors: The 3-word brand test every crypto project fails')">
+        The 3-word brand test every crypto project fails
+        <div class="idea-owner">Daily · Adams</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a Tribe Advisors thread: How to build a launch narrative that holds up after TGE')">
+        How to build a launch narrative that holds up post-TGE
+        <div class="idea-owner">Thread · Adams</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a daily post for Tribe Advisors: Community vs audience — the distinction that decides long-term growth')">
+        The difference between community and audience in Web3
+        <div class="idea-owner">Daily · Adams</div>
+      </div>
+
+      <div class="ideas-section-label">⚙️ Ops & Dealflow (Sruickk · Lucci)</div>
+
+      <div class="idea-pill" onclick="sendPrompt('Write a long-form Twitter thread for Tribe Advisors: How to build a BD pipeline in Web3 when you have no existing network — step by step')">
+        Building a BD pipeline in Web3 with no existing network
+        <div class="idea-owner">Thread · Sruickk + Lucci</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a daily post for Tribe Advisors: The one question we ask every founder before taking them on as a client')">
+        The one question we ask every founder before onboarding them
+        <div class="idea-owner">Daily · Lucci</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a Tribe Advisors daily post: 3 BD levers that compound vs 3 that burn out fast')">
+        3 BD levers that compound over time vs short-term plays
+        <div class="idea-owner">Daily · Sruickk</div>
+      </div>
+      <div class="idea-pill" onclick="sendPrompt('Write a Tribe Advisors thread: How we structure our internal dealflow tracking — the system behind the pipeline')">
+        How we structure dealflow tracking internally at Tribe
+        <div class="idea-owner">Thread · Sruickk</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASES -->
+  <div class="panel" id="tab-phases">
+    <p class="section-title">Growth roadmap <span>Three phases to community</span></p>
+    <div class="phases">
+      <div class="phase-card">
+        <div class="phase-num">Phase 1 · Now</div>
+        <div class="phase-name">Foundation</div>
+        <div class="phase-trigger">Weeks 1–8 · Build the baseline</div>
+        <ul class="phase-action">
+          <li>1 post/day, 1 long-form/week</li>
+          <li>Establish each team member's voice</li>
+          <li>Hit 500→2k followers milestone</li>
+          <li>Track what resonates by pillar</li>
+          <li>Reply to relevant founders daily</li>
+          <li>Cross-post long-forms to LinkedIn</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Phase 2 · When traction shows</div>
+        <div class="phase-name">Amplification</div>
+        <div class="phase-trigger">2k+ followers, consistent engagement</div>
+        <ul class="phase-action">
+          <li>Launch weekly Spaces series</li>
+          <li>Founder interview format</li>
+          <li>Introduce co-created threads w/ founders</li>
+          <li>Start building email / newsletter list</li>
+          <li>Pitch journalists/podcasts on threads</li>
+          <li>Paid distribution experiments (small)</li>
+        </ul>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">Phase 3 · Community signal</div>
+        <div class="phase-name">Community layer</div>
+        <div class="phase-trigger">Real DMs, inbound from founders</div>
+        <ul class="phase-action">
+          <li>Open private Discord for founders</li>
+          <li>Monthly research drop (gated)</li>
+          <li>Deal sharing / warm intro network</li>
+          <li>Community becomes a sales channel</li>
+          <li>Annual Tribe Founder Report (public)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORG SYSTEM -->
+  <div class="panel" id="tab-org">
+    <p class="section-title">Content org system <span>Adams + Lucci to build out</span></p>
+    <div class="org-grid">
+      <div class="org-card">
+        <div class="org-title">Notion / Airtable content board</div>
+        <div class="org-row"><span class="org-label">Status columns</span><span class="org-val">Idea → Draft → Review → Scheduled → Published</span></div>
+        <div class="org-row"><span class="org-label">Fields</span><span class="org-val">Pillar, Format, Owner, Due date, URL</span></div>
+        <div class="org-row"><span class="org-label">Long-form queue</span><span class="org-val">4 weeks ahead minimum</span></div>
+        <div class="org-row"><span class="org-label">Daily queue</span><span class="org-val">1 week ahead minimum</span></div>
+        <div class="org-row"><span class="org-label">Review rule</span><span class="org-val">1 other person eyes long-form before publish</span></div>
+      </div>
+      <div class="org-card">
+        <div class="org-title">Weekly rhythm</div>
+        <div class="org-row"><span class="org-label">Monday</span><span class="org-val">Check queue, assign any gaps</span></div>
+        <div class="org-row"><span class="org-label">Tuesday</span><span class="org-val">Long-form draft due for next Wed</span></div>
+        <div class="org-row"><span class="org-label">Wednesday</span><span class="org-val">Long-form reviewed + scheduled</span></div>
+        <div class="org-row"><span class="org-label">Thursday</span><span class="org-val">Next week daily posts drafted</span></div>
+        <div class="org-row"><span class="org-label">Friday</span><span class="org-val">Review metrics, update ideas bank</span></div>
+      </div>
+      <div class="org-card">
+        <div class="org-title">Who owns what</div>
+        <div class="org-row"><span class="org-label">Content calendar</span><span class="org-val">Lucci (owns pipeline)</span></div>
+        <div class="org-row"><span class="org-label">Long-form research</span><span class="org-val">Jynro (primary), Lucci (ops)</span></div>
+        <div class="org-row"><span class="org-label">Brand/narrative posts</span><span class="org-val">Adams</span></div>
+        <div class="org-row"><span class="org-label">BD/dealflow posts</span><span class="org-val">Sruickk + Lucci</span></div>
+        <div class="org-row"><span class="org-label">Scheduling</span><span class="org-val">Buffer / Typefully (Lucci)</span></div>
+      </div>
+      <div class="org-card">
+        <div class="org-title">Metrics to track weekly</div>
+        <div class="org-row"><span class="org-label">Followers</span><span class="org-val">Net weekly growth</span></div>
+        <div class="org-row"><span class="org-label">Impressions</span><span class="org-val">Per post, per pillar avg</span></div>
+        <div class="org-row"><span class="org-label">Profile visits</span><span class="org-val">Lagging indicator of interest</span></div>
+        <div class="org-row"><span class="org-label">Link clicks</span><span class="org-val">Long-form only</span></div>
+        <div class="org-row"><span class="org-label">Inbound DMs</span><span class="org-val">Qualitative pipeline signal</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('#tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
